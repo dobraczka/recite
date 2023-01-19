@@ -1,4 +1,8 @@
+<p align="center">
+<img src="https://github.com/dobraczka/recite/raw/main/docs/logo.png" alt="recite logo", width=200/>
+</p>
 <h2 align="center"> recite</h2>
+
 
 <p align="center">
 <a href="https://github.com/dobraczka/recite/actions/workflows/main.yml"><img alt="Actions Status" src="https://github.com/dobraczka/recite/actions/workflows/main.yml/badge.svg?branch=main"></a>

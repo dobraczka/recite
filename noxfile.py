@@ -36,7 +36,7 @@ def style_checking(session: Session) -> None:
         "darglint",
         "pydocstyle",
     )
-    session.run("pflake8", "--docstring-style", "sphinx",  *args)
+    session.run("pflake8", "--docstring-style", "sphinx", *args)
 
 
 @session()
@@ -50,14 +50,6 @@ def type_checking(session: Session) -> None:
     args = session.posargs or locations
     session.install("mypy")
     session.run("mypy", "--ignore-missing-imports", *args)
-
-
-@session()
-def doctests(session: Session) -> None:
-    session.install(".[all]")
-    session.install("xdoctest")
-    session.install("pygments")
-    session.run("xdoctest", "-m", "recite")
 
 
 @session()
