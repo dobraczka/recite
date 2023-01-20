@@ -24,6 +24,16 @@ class Step(ABC):
 
 
 @dataclass
+class CheckPyProjectStep(Step):
+    short_name: str = "check_pyproject_toml"
+    description: str = "Make sure you have a (non-empty) pyproject.toml"
+
+    def run(self) -> Result:
+        success = os.path.isfile("pyproject.toml") and os.path.getsize("pyproject.toml") > 0
+        return Result(success=success)
+
+
+@dataclass
 class CheckOnMainStep(Step):
     short_name: str = "check_on_main"
     description: str = "Make sure you're on main/master branch"
@@ -77,7 +87,7 @@ class CheckChangelogStep(Step):
                 break
         if cl_path is None:
             return Result(
-                success=False, messages=[f"Could not find Changelog in paths {paths}"]
+                success=False, messages=["Could not find Changelog in paths:", f"{paths}"]
             )
         current_version = toml.load("pyproject.toml")["tool"]["poetry"]["version"]
         if current_version == "0.1.0":

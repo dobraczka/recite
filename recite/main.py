@@ -8,6 +8,7 @@ from .step import (
     CheckChangelogStep,
     CheckCleanGitStep,
     CheckOnMainStep,
+    CheckPyProjectStep,
     RunTestsStep,
     Step,
 )
@@ -17,7 +18,9 @@ app = typer.Typer()
 
 
 def run_steps(steps: Iterable[Step]):
-    console.print(message="Checking everything to make sure you are ready to release")
+    console.print_message(
+        message=":eyes: Checking everything to make sure you are ready to release :eyes:"
+    )
     for number, step in enumerate(steps, start=1):
         result = step.run()
         if result.success:
@@ -25,15 +28,22 @@ def run_steps(steps: Iterable[Step]):
         else:
             console.print_failure(message=step.description, number=number)
             if result.messages is not None:
-                for msg in result.messages:
-                    console.print_error(message=msg, indent_count=1)
+                console.print_multiple_messages(
+                    messages=result.messages, indent_count=1, color="bad"
+                )
             sys.exit(1)
 
 
 @app.command()
 def main():
     run_steps(
-        [CheckOnMainStep(), CheckCleanGitStep(), RunTestsStep(), CheckChangelogStep()]
+        [
+            CheckPyProjectStep(),
+            CheckOnMainStep(),
+            CheckCleanGitStep(),
+            RunTestsStep(),
+            CheckChangelogStep(),
+        ]
     )
 
 
