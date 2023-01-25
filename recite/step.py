@@ -29,7 +29,9 @@ class CheckPyProjectStep(Step):
     description: str = "Make sure you have a (non-empty) pyproject.toml"
 
     def run(self) -> Result:
-        success = os.path.isfile("pyproject.toml") and os.path.getsize("pyproject.toml") > 0
+        success = (
+            os.path.isfile("pyproject.toml") and os.path.getsize("pyproject.toml") > 0
+        )
         return Result(success=success)
 
 
@@ -87,7 +89,8 @@ class CheckChangelogStep(Step):
                 break
         if cl_path is None:
             return Result(
-                success=False, messages=["Could not find Changelog in paths:", f"{paths}"]
+                success=False,
+                messages=["Could not find Changelog in paths:", f"{paths}"],
             )
         current_version = toml.load("pyproject.toml")["tool"]["poetry"]["version"]
         if current_version == "0.1.0":

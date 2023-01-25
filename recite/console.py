@@ -45,7 +45,10 @@ class ReciteConsole:
             if msg_n > 0:
                 indent_char = " "
             self.print_message(
-                message=msg, indent_count=indent_count, indent_char=indent_char, color=color
+                message=msg,
+                indent_count=indent_count,
+                indent_char=indent_char,
+                color=color,
             )
 
     def print_success(self, message: str, number: Optional[str] = None):
