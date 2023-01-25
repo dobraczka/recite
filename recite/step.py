@@ -2,7 +2,7 @@ import os
 import subprocess
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Iterable, Optional
 
 import toml
 from git import Repo
@@ -11,26 +11,23 @@ from git import Repo
 @dataclass
 class Result:
     success: bool
-    messages: Iterable[str] = None
+    messages: Optional[Iterable[str]] = None
 
 
 @dataclass
-class Step(ABC):
+class StepMixin:
     project_dir: str
     short_name: str
     description: str
 
+
+class Step(ABC, StepMixin):
     @abstractmethod
     def run(self) -> Result:
         raise NotImplementedError
 
 
-@dataclass
 class GitStep(Step):
-    project_dir: str
-    short_name: str
-    description: str
-
     def __post_init__(self):
         self.repo = Repo(self.project_dir)
 
@@ -84,11 +81,11 @@ class RunTestsStep(Step):
 
 
 @dataclass
-class CheckChangelogStep(Step):
+class CheckChangelogStep(GitStep):
     short_name: str = "check_changelog"
     description: str = "Make sure changelog was updated"
 
-    def run(self) -> bool:
+    def run(self) -> Result:
         paths = [
             "CHANGELOG",
             "CHANGELOG.md",
@@ -104,7 +101,7 @@ class CheckChangelogStep(Step):
                 success=False,
                 messages=["Could not find Changelog in paths:", f"{paths}"],
             )
-        current_version = toml.load("pyproject.toml")["tool"]["poetry"]["version"]
+        current_version: str = toml.load("pyproject.toml")["tool"]["poetry"]["version"]
         if current_version == "0.1.0":
             if os.path.getsize(cl_path) > 0:
                 # there is a changelog file and it contains something
@@ -114,8 +111,6 @@ class CheckChangelogStep(Step):
                     success=False, messages=[f"Changelog file '{cl_path}' empty"]
                 )
         # check if there is a diff
-        res = subprocess.check_output(
-            ["git", "diff", current_version, "--", cl_path], capture_output=True
-        )
+        res = self.repo.git("diff", current_version, "--", cl_path)
         success = len(res.stdout.decode()) > 0
         return Result(success=success)

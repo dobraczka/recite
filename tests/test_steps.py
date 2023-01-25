@@ -1,5 +1,6 @@
 import os
 from dataclasses import dataclass
+from typing import Optional
 from unittest import mock
 
 import pytest
@@ -35,7 +36,7 @@ class MockGit:
 @dataclass
 class MockRepo:
 
-    git: MockGit = None
+    git: Optional[MockGit] = None
     dirty: bool = False
 
     def is_dirty(self) -> bool:

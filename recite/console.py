@@ -51,7 +51,7 @@ class ReciteConsole:
                 color=color,
             )
 
-    def print_success(self, message: str, number: Optional[str] = None):
+    def print_success(self, message: str, number: Optional[int] = None):
         number_str = ""
         if number:
             number_str = f"{number}: "
@@ -62,7 +62,7 @@ class ReciteConsole:
             message=message,
         )
 
-    def print_failure(self, message: str, number: Optional[str] = None):
+    def print_failure(self, message: str, number: Optional[int] = None):
         number_str = ""
         if number:
             number_str = f"{number}: "
@@ -73,7 +73,7 @@ class ReciteConsole:
             message=message,
         )
 
-    def print_error(self, message: str, indent_count: str):
+    def print_error(self, message: str, indent_count: int):
         self.print_message(
             message=message, indent_count=indent_count, color=self.bad_color
         )
