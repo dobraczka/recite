@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Iterable
 
 import toml
+from git import Repo
 
 
 @dataclass
@@ -15,12 +16,23 @@ class Result:
 
 @dataclass
 class Step(ABC):
+    project_dir: str
     short_name: str
     description: str
 
     @abstractmethod
     def run(self) -> Result:
         raise NotImplementedError
+
+
+@dataclass
+class GitStep(Step):
+    project_dir: str
+    short_name: str
+    description: str
+
+    def __post_init__(self):
+        self.repo = Repo(self.project_dir)
 
 
 @dataclass
@@ -36,29 +48,29 @@ class CheckPyProjectStep(Step):
 
 
 @dataclass
-class CheckOnMainStep(Step):
+class CheckOnMainStep(GitStep):
     short_name: str = "check_on_main"
     description: str = "Make sure you're on main/master branch"
 
     def run(self) -> Result:
-        res = subprocess.run(
-            ["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True
-        )
-        current_branch = res.stdout.decode().strip()
+        current_branch = self.repo.active_branch.name
         success = current_branch == "main" or current_branch == "master"
         return Result(success=success)
 
 
 @dataclass
-class CheckCleanGitStep(Step):
+class CheckCleanGitStep(GitStep):
     short_name: str = "check_clean_git"
     description: str = "Make sure git is clean"
 
     def run(self) -> Result:
-        success = (
-            subprocess.check_output(["git", "status", "--porcelain"]).decode() == ""
-        )
-        return Result(success=success)
+        if self.repo.is_dirty():
+            return Result(success=False, messages=["You have an unclean working tree!"])
+        res = self.repo.git.status("--branch", "--porcelain")
+        lines = str.splitlines(res)
+        if len(lines) > 0 and "[ahead " in lines[0]:
+            return Result(success=False, messages=["Local and remote not synced!"])
+        return Result(success=True)
 
 
 @dataclass
