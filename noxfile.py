@@ -36,6 +36,7 @@ def style_checking(session: Session) -> None:
         "darglint",
         "pydocstyle",
     )
+    session.run("mypy", "--install-types", "--non-interactive")
     session.run("pflake8", "--docstring-style", "sphinx", *args)
 
 
