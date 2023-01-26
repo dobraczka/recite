@@ -49,7 +49,13 @@ def pyroma(session: Session) -> None:
 def type_checking(session: Session) -> None:
     args = session.posargs or locations
     session.install("mypy")
-    session.run("mypy", "--install-types", "--non-interactive", "--ignore-missing-imports", *args)
+    session.run(
+        "mypy",
+        "--install-types",
+        "--non-interactive",
+        "--ignore-missing-imports",
+        *args
+    )
 
 
 @session()
