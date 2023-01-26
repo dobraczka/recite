@@ -59,9 +59,10 @@ class CheckOnMainStep(GitStep):
 class CheckCleanGitStep(GitStep):
     short_name: str = "check_clean_git"
     description: str = "Make sure git is clean"
+    allow_untracked_files: bool = False
 
     def run(self) -> Result:
-        if self.repo.is_dirty():
+        if self.repo.is_dirty(untracked_files=self.allow_untracked_files):
             return Result(success=False, messages=["You have an unclean working tree!"])
         res = self.repo.git.status("--branch", "--porcelain")
         lines = str.splitlines(res)

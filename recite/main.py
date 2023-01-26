@@ -1,5 +1,5 @@
-import sys
 from typing import Iterable
+import os
 
 import typer
 
@@ -17,7 +17,7 @@ console = ReciteConsole()
 app = typer.Typer()
 
 
-def run_steps(steps: Iterable[Step]):
+def run_steps(steps: Iterable[Step]) -> bool:
     console.print_message(
         message=":eyes: Checking everything to make sure you are ready to release :eyes:"
     )
@@ -31,20 +31,32 @@ def run_steps(steps: Iterable[Step]):
                 console.print_multiple_messages(
                     messages=result.messages, indent_count=1, color="bad"
                 )
-            sys.exit(1)
+            return False
+        if result.messages is not None:
+            console.print_multiple_messages(
+                messages=result.messages, indent_count=1, color="good"
+            )
+    return True
 
 
 @app.command()
-def main():
-    run_steps(
+def main(
+    allow_untracked_files: bool = typer.Option(
+        False, help="Allow files not tracked by git"
+    )
+):
+    project_dir = os.getcwd()
+    successful = run_steps(
         [
-            CheckPyProjectStep(),
-            CheckOnMainStep(),
-            CheckCleanGitStep(),
-            RunTestsStep(),
-            CheckChangelogStep(),
+            CheckPyProjectStep(project_dir=project_dir),
+            CheckOnMainStep(project_dir=project_dir),
+            CheckCleanGitStep(project_dir=project_dir, allow_untracked_files=allow_untracked_files),
+            RunTestsStep(project_dir=project_dir),
+            CheckChangelogStep(project_dir=project_dir),
         ]
     )
+    if not successful:
+        typer.Exit(code=1)
 
 
 if __name__ == "__main__":

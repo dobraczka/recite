@@ -33,6 +33,7 @@ def style_checking(session: Session) -> None:
         "flake8-comprehensions",
         "flake8-print",
         "flake8-black",
+        "flake8-bugbear",
         "darglint",
         "pydocstyle",
     )
