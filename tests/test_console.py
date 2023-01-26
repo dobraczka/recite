@@ -8,6 +8,8 @@ from recite.console import ReciteConsole
     "message, color, glyph, number_str, number, indent_count, indent_char",
     [
         ("I am a test message", "white", None, None, None, 1, " "),
+        ("I am a test message", "good", None, None, None, 1, " "),
+        ("I am a test message", "bad", None, None, None, 1, " "),
         ("I am a test message2", "red", "🤣", " 1: ", 1, 1, " | "),
     ],
 )

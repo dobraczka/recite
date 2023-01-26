@@ -24,12 +24,12 @@ class StepMixin:
 class Step(ABC, StepMixin):
     @abstractmethod
     def run(self) -> Result:
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
 
 class GitStep(Step):
     def __post_init__(self):
-        self.repo = Repo(self.project_dir)
+        self.repo = Repo(self.project_dir)  # pragma: no cover
 
 
 @dataclass
@@ -111,6 +111,6 @@ class CheckChangelogStep(GitStep):
                     success=False, messages=[f"Changelog file '{cl_path}' empty"]
                 )
         # check if there is a diff
-        res = self.repo.git("diff", current_version, "--", cl_path)
-        success = len(res.stdout.decode()) > 0
+        res = self.repo.git.diff(current_version, "--", cl_path)
+        success = len(res) > 0
         return Result(success=success)
