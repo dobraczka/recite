@@ -4,7 +4,7 @@ from typing import Iterable
 import typer
 
 from recite.console import ReciteConsole
-from recite.step import BumpVersionStep, Step, DynamicVersionDescriptionGitStep
+from recite.step import BumpVersionStep, DynamicVersionDescriptionGitStep, Step
 
 
 @dataclass(kw_only=True)
@@ -14,10 +14,10 @@ class StepRunner:
     steps: Iterable[Step]
 
     def pre_run(self):
-        pass # pragma: no cover
+        pass  # pragma: no cover
 
     def post_run(self):
-        pass # pragma: no cover
+        pass  # pragma: no cover
 
     def run_steps(self) -> bool:
         self.pre_run()

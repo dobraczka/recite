@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import List, Optional
+
 
 @dataclass
 class MockGit:
@@ -51,6 +52,7 @@ class MockRepo:
 
 def mock_post_init(self):
     self.repo = MockRepo()
+
 
 def mock_post_init_with_git(self):
     self.repo = MockRepo()

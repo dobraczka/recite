@@ -220,9 +220,6 @@ class PoetryPublishStep(Step):
     description: str = "Build and publish with poetry"
 
     def run(self) -> Result:
-        import ipdb # noqa: autoimport
-        ipdb.set_trace() # BREAKPOINT
-
         command = ["poetry", "publish", "--build"]
         if os.getenv("PYPI_TOKEN"):
             token = os.getenv("PYPI_TOKEN")
@@ -231,7 +228,7 @@ class PoetryPublishStep(Step):
         res = subprocess.run(command)
         if res.returncode != 0:
             return Result(success=False, messages=[res.stderr.decode().strip()])
-        return Result(success=True, messages=f"Build and published successfully!")
+        return Result(success=True, messages="Build and published successfully!")
 
 
 @dataclass(kw_only=True)

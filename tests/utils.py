@@ -1,6 +1,8 @@
-from typing import Optional
-import toml
 import pathlib
+from typing import Optional
+
+import toml
+
 
 def create_file(
     my_tmp_path: pathlib.Path, file_name: str, content: Optional[str] = None

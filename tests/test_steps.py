@@ -1,10 +1,10 @@
 import os
 from collections import namedtuple
-from git import Repo
 from unittest import mock
 
 import pytest
 import toml
+from git import Repo
 
 from recite.step import (
     BumpVersionStep,
@@ -156,4 +156,4 @@ def test_failed_version_bump(tmp_path):
 
 @mock.patch("typer.confirm", return_value=False)
 def test_no_gh_reminder(mocked):
-    assert False == GithubReleaseReminderStep().run().success
+    assert not GithubReleaseReminderStep().run().success
