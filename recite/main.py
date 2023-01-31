@@ -1,62 +1,77 @@
-from typing import Iterable
 import os
 
 import typer
 
 from .console import ReciteConsole
+from .runner import CheckStepRunner, PerformReleaseRunner
 from .step import (
+    BumpVersionStep,
     CheckChangelogStep,
     CheckCleanGitStep,
     CheckOnMainStep,
     CheckPyProjectStep,
+    CommitVersionBumpStep,
+    GithubReleaseReminderStep,
+    GitTagStep,
+    PoetryPublishStep,
+    PushTagStep,
     RunTestsStep,
-    Step,
 )
 
 console = ReciteConsole()
 app = typer.Typer()
 
 
-def run_steps(steps: Iterable[Step]) -> bool:
-    console.print_message(
-        message=":eyes: Checking everything to make sure you are ready to release :eyes:"
-    )
-    for number, step in enumerate(steps, start=1):
-        result = step.run()
-        if result.success:
-            console.print_success(message=step.description, number=number)
-        else:
-            console.print_failure(message=step.description, number=number)
-            if result.messages is not None:
-                console.print_multiple_messages(
-                    messages=result.messages, indent_count=1, color="bad"
-                )
-            return False
-        if result.messages is not None:
-            console.print_multiple_messages(
-                messages=result.messages, indent_count=1, color="good"
-            )
-    return True
-
-
 @app.command()
 def main(
+    release_type: str = typer.Argument(
+        ..., help="What type of release is this? For initial release use 'initial'"
+    ),
     allow_untracked_files: bool = typer.Option(
         False, help="Allow files not tracked by git"
-    )
+    ),
+    remote: str = typer.Option("origin", help="Where should the tag be pushed?"),
+    commit_message: str = typer.Option(
+        "Bumped version", help="Commit message for version bump"
+    ),
 ):
     project_dir = os.getcwd()
-    successful = run_steps(
-        [
-            CheckPyProjectStep(project_dir=project_dir),
+    console = ReciteConsole()
+    successful = CheckStepRunner(
+        steps=[
+            CheckPyProjectStep(),
             CheckOnMainStep(project_dir=project_dir),
-            CheckCleanGitStep(project_dir=project_dir, allow_untracked_files=allow_untracked_files),
-            RunTestsStep(project_dir=project_dir),
+            CheckCleanGitStep(
+                project_dir=project_dir, allow_untracked_files=allow_untracked_files
+            ),
+            RunTestsStep(),
             CheckChangelogStep(project_dir=project_dir),
-        ]
-    )
+        ],
+        console=console,
+    ).run_steps()
     if not successful:
         typer.Exit(code=1)
+    else:
+        if release_type == "initial":
+            steps = [
+                GitTagStep(),
+                PushTagStep(remote=remote),
+                PoetryPublishStep(),
+                GithubReleaseReminderStep(),
+            ]
+        else:
+            steps = [
+                BumpVersionStep(bump_rule=release_type),
+                CommitVersionBumpStep(commit_message=commit_message),
+                GitTagStep(),
+                PushTagStep(remote=remote),
+                PoetryPublishStep(),
+                GithubReleaseReminderStep(),
+            ]
+        PerformReleaseRunner(
+            steps=steps,
+            console=console,
+        ).run_steps()
 
 
 if __name__ == "__main__":

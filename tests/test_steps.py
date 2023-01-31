@@ -1,74 +1,27 @@
 import os
-import pathlib
 from collections import namedtuple
-from dataclasses import dataclass
-from typing import Optional
+from git import Repo
 from unittest import mock
 
 import pytest
 import toml
 
 from recite.step import (
+    BumpVersionStep,
     CheckChangelogStep,
     CheckCleanGitStep,
     CheckOnMainStep,
     CheckPyProjectStep,
+    CommitVersionBumpStep,
+    GithubReleaseReminderStep,
+    GitTagStep,
+    Result,
     RunTestsStep,
+    VersionBump,
 )
 
-
-def create_file(
-    my_tmp_path: pathlib.Path, file_name: str, content: Optional[str] = None
-):
-    # create a file "myfile" in "mydir" in temp folder
-    filepath = my_tmp_path / file_name
-    with filepath.open("w", encoding="utf-8") as f:
-        if content is not None:
-            f.write(content)
-
-
-def create_versioned_pyproject_toml(my_tmp_path: pathlib.Path, version: str):
-    create_file(
-        my_tmp_path,
-        "pyproject.toml",
-        toml.dumps({"tool": {"poetry": {"version": version}}}),
-    )
-
-
-@dataclass
-class MockGit:
-    unsynced: bool = False
-    has_diff: bool = False
-
-    def status(self, branch: str, porcelain_str: str) -> str:
-        if self.unsynced:
-            return "## main...origin/main [ahead 1]"
-        return ""
-
-    def diff(self, *args) -> str:
-        if self.has_diff:
-            return "diff --git just a test"
-        return ""
-
-
-@dataclass
-class MockBranch:
-    name: str
-
-
-@dataclass
-class MockRepo:
-
-    git: Optional[MockGit] = None
-    dirty: bool = False
-    active_branch: Optional[MockBranch] = None
-
-    def is_dirty(self) -> bool:
-        return self.dirty
-
-
-def mock_post_init(self):
-    self.repo = MockRepo()
+from .mocks import MockBranch, MockGit, mock_post_init, mock_post_init_with_git
+from .utils import create_file, create_versioned_pyproject_toml
 
 
 @pytest.mark.parametrize("create, e_success", [(True, True), (False, False)])
@@ -76,7 +29,7 @@ def test_check_pyproject_step(create, e_success, tmp_path):
     os.chdir(tmp_path)
     if create:
         create_file(tmp_path, "pyproject.toml", "test")
-    assert CheckPyProjectStep(tmp_path).run().success == e_success
+    assert CheckPyProjectStep().run().success == e_success
 
 
 @mock.patch("recite.step.CheckOnMainStep.__post_init__", mock_post_init)
@@ -89,7 +42,7 @@ def test_check_pyproject_step(create, e_success, tmp_path):
     ],
 )
 def test_check_on_main(branch_name, e_success, tmp_path):
-    step = CheckOnMainStep(tmp_path)
+    step = CheckOnMainStep(project_dir=tmp_path)
     step.repo.active_branch = MockBranch(name=branch_name)
     assert step.run().success == e_success
 
@@ -104,7 +57,7 @@ def test_check_on_main(branch_name, e_success, tmp_path):
     ],
 )
 def test_check_git_dirty(is_dirty, unsynced, e_success, tmp_path):
-    step = CheckCleanGitStep(tmp_path)
+    step = CheckCleanGitStep(project_dir=tmp_path)
     step.repo.dirty = is_dirty
     step.repo.git = MockGit(unsynced=unsynced)
     assert step.run().success == e_success
@@ -119,7 +72,7 @@ def test_run_test_suite(mock_subproc, ret_code, e_success):
         return namedtuple("ReturnObject", ["returncode"])(returncode)
 
     mock_subproc.run = mock_run
-    step = RunTestsStep("somedir")
+    step = RunTestsStep()
     assert step.run().success == e_success
 
 
@@ -143,6 +96,64 @@ def test_check_changelog(
     if file_name:
         create_file(tmp_path, file_name, content)
     os.chdir(tmp_path)
-    step = CheckChangelogStep(tmp_path)
+    step = CheckChangelogStep(project_dir=tmp_path)
     step.repo.git = MockGit(has_diff=has_diff)
     assert step.run().success == e_success
+
+
+@pytest.mark.parametrize(
+    "current_version, bump_rule, is_dry, expected_in_toml, expected_result",
+    [
+        (
+            "0.1.0",
+            "patch",
+            True,
+            "0.1.0",
+            Result(success=True, return_value=VersionBump("0.1.0", "0.1.1")),
+        ),
+        (
+            "0.1.0",
+            "patch",
+            False,
+            "0.1.1",
+            Result(success=True),
+        ),
+        (
+            "0.1.0",
+            "nonexisting command",
+            False,
+            "0.1.0",
+            Result(success=False),
+        ),
+    ],
+)
+def test_bump_version(
+    current_version, bump_rule, is_dry, expected_in_toml, expected_result, tmp_path
+):
+    create_versioned_pyproject_toml(tmp_path, current_version)
+    os.chdir(tmp_path)
+    step = BumpVersionStep(bump_rule=bump_rule)
+    result = step.run(dry_run=is_dry)
+    if is_dry:
+        assert result.return_value == expected_result.return_value
+    assert result.success == expected_result.success
+    assert (
+        expected_in_toml
+        == toml.load(tmp_path / "pyproject.toml")["tool"]["poetry"]["version"]
+    )
+
+
+@mock.patch("recite.step.GitTagStep.__post_init__", mock_post_init)
+def test_git_tag_step_fails():
+    assert not GitTagStep().run().success
+
+
+def test_failed_version_bump(tmp_path):
+    os.chdir(tmp_path)
+    Repo.init(tmp_path)
+    assert not CommitVersionBumpStep(project_dir=tmp_path).run().success
+
+
+@mock.patch("typer.confirm", return_value=False)
+def test_no_gh_reminder(mocked):
+    assert False == GithubReleaseReminderStep().run().success
