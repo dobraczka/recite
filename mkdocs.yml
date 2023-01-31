@@ -1,4 +1,5 @@
 site_name: recite
+site_description: recite, Publish your poetry-based projects, without missing important steps
 theme:
   name: material
   font:
@@ -25,6 +26,11 @@ theme:
 
 repo_name: dobraczka/recite
 repo_url: https://github.com/dobraczka/recite
+
+nav:
+  - recite: index.md
+  - steps: steps.md
+  - recommendations: recommendations.md
 
 plugins:
   - search:

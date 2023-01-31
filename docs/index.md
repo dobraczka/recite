@@ -42,10 +42,26 @@ recite >        <span class="termynal-green-text">* Bumped version from</span> <
 recite > <span class="termynal-blue-text">2</span>: <span class="termynal-green-text">✓ Commit version bump</span>
 recite > <span class="termynal-blue-text">3</span>: <span class="termynal-green-text">✓ Create git tag</span> <span class="termynal-blue-text">0.1.1</span>
 recite > <span class="termynal-blue-text">4</span>: <span class="termynal-green-text">✓ Push git tag</span> <span class="termynal-blue-text">0.1.1</span>
+recite > <span class="termynal-blue-text">5</span>: <span class="termynal-green-text">✓ Build and publish with poetry</span>
 
 # Please create a github release now! Did you do it? [y/N]:$ y
 
-recite > <span class="termynal-blue-text">5</span>: <span class="termynal-green-text">✓ Remind you to upload build as github release</span>
+recite > <span class="termynal-blue-text">6</span>: <span class="termynal-green-text">✓ Remind you to upload build as github release</span>
 recite > 🚀 Congrats to your release! 🚀
 ```
 </div>
+
+# Installation
+
+<div class="termy">
+```console
+$ pip install recite
+---> 100%
+Successfully installed typer
+```
+</div>
+
+# Why?
+
+Previously I used a github action to automatically build and publish a new version of a library if a new tag was pushed. However, sometimes I forgot to something crucial (e.g. to adapt the changelog). In this case I had to rush to stop the github action before it would publish the release to pypi (where it would lie forever unable to be rectified).
+This ensures all the necessary checks are in place before any tags are created.

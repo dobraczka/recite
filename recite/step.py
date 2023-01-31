@@ -226,6 +226,10 @@ class PoetryPublishStep(Step):
             token = os.getenv("PYPI_TOKEN")
             assert token  # for mypy
             command.extend(["--username", "__token__", "--password", token])
+        else:
+            user_name = typer.prompt("Please enter your PyPI username")
+            password = typer.prompt("Please enter your PyPI password", hide_input=True)
+            command.extend(["--username", user_name, "--password", password])
         res = subprocess.run(command)
         if res.returncode != 0:
             return Result(success=False, messages=[res.stderr.decode().strip()])

@@ -7,7 +7,7 @@
 <p align="center">
 <a href="https://github.com/dobraczka/recite/actions/workflows/main.yml"><img alt="Actions Status" src="https://github.com/dobraczka/recite/actions/workflows/main.yml/badge.svg?branch=main"></a>
 <a href='https://recite.readthedocs.io/en/latest/?badge=latest'><img src='https://readthedocs.org/projects/recite/badge/?version=latest' alt='Documentation Status' /></a>
-<a href="https://codecov.io/gh/dobraczka/kiez"><img src="https://codecov.io/gh/dobraczka/kiez/branch/main/graph/badge.svg?token=AHBYFKJVLV"/></a>
+<a href="https://codecov.io/gh/dobraczka/recite"><img src="https://codecov.io/gh/dobraczka/recite/branch/main/graph/badge.svg?token=AHBYFKJVLV"/></a>
 <a href="https://pypi.org/project/recite"/><img alt="Stable python versions" src="https://img.shields.io/pypi/pyversions/recite"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </p>
@@ -37,8 +37,9 @@ recite >        * Bumped version from 0.1.0 to 0.1.1
 recite > 2: ✓ Commit version bump
 recite > 3: ✓ Create git tag 0.1.1
 recite > 4: ✓ Push git tag 0.1.1
+recite > 5: ✓ Build and publish with poetry
 Please create a github release now! Did you do it? [y/N]: y
-recite > 5: ✓ Remind you to upload build as github release
+recite > 6: ✓ Remind you to upload build as github release
 recite > 🚀 Congrats to your release! 🚀
 ```
 
