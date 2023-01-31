@@ -22,7 +22,7 @@ packages = [
 recite = "recite.main:app"
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4.0"
+python = ">=3.10,<4.0"
 typer = "^0.7.0"
 rich = "^13.1.0"
 toml = "^0.10.2"
