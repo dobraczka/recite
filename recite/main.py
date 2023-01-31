@@ -53,6 +53,7 @@ def main(
     if not successful:
         typer.Exit(code=1)
     else:
+        is_initial = False
         if release_type == "initial":
             steps = [
                 GitTagStep(),
@@ -60,6 +61,7 @@ def main(
                 PoetryPublishStep(),
                 GithubReleaseReminderStep(),
             ]
+            is_initial = True
         else:
             steps = [
                 BumpVersionStep(bump_rule=release_type),
@@ -72,6 +74,7 @@ def main(
         PerformReleaseRunner(
             steps=steps,
             console=console,
+            is_initial=is_initial,
         ).run_steps()
 
 

@@ -56,10 +56,11 @@ class CheckStepRunner(StepRunner):
 @dataclass(kw_only=True)
 class PerformReleaseRunner(StepRunner):
     beginning_message: str = ":sparkles: Performing release :sparkles:"
+    is_initial: bool = False
 
     def pre_run(self):
         self.console.print_message("I will perform the following steps:")
-        new_version = ""
+        new_version = "0.1.0" if self.is_initial else ""
         for step in self.steps:
             msg = step.description
             if isinstance(step, BumpVersionStep):
