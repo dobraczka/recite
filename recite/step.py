@@ -183,6 +183,7 @@ class CommitVersionBumpStep(GitStep):
 class GitTagStep(DynamicVersionDescriptionGitStep):
     short_name: str = "gittag"
     description: str = "Create git tag"
+    prefix: str = ""
 
     def run(self) -> Result:
         if not hasattr(self, "_new_version"):
@@ -190,7 +191,7 @@ class GitTagStep(DynamicVersionDescriptionGitStep):
                 success=False, messages=["Can't tag if no new version is provided"]
             )
         try:
-            self.repo.git.tag(self.new_version)
+            self.repo.git.tag(f"{self.prefix}{self.new_version}")
         except GitCommandError as e:
             return Result(success=False, messages=[e.stderr.strip()])
         return Result(success=True)
