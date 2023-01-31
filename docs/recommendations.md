@@ -10,7 +10,7 @@ Personally, I prefer [nox](https://nox.thea.codes/en/stable/), because it uses s
 
 If you use a tool like `recite` you probably do not need somebody to tell you, that you should write tests for your code. I like to use [pytest](https://docs.pytest.org/en/6.2.x/index.html).
 
-## Style-guide
+## Style-guide and other quality checks
 
 You should ensure your Python code adheres to the style guide according to [PEP 8](https://pep8.org/). To check this you should use [flake8](https://flake8.pycqa.org/en/latest/index.html).
 There are a ton of plugins, to enhance this. I like to use the following:
@@ -30,3 +30,5 @@ name | description
 Since flake8 cannot be configured via `pyproject.toml` I use [pyproject-flake8](https://github.com/csachs/pyproject-flake8) to have all configuration in one place.
 
 Furthermore I use [pyroma](https://github.com/regebro/pyroma) to make sure my project complies with the best practices of the python packaging ecosystem.
+
+Static type-checking via [mypy](https://mypy.readthedocs.io/en/stable/index.html) can in many cases find bugs early.

@@ -49,18 +49,12 @@ flake8-bugbear = "^22.7.1"
 darglint = "^1.8.1"
 unittest-templates = "^0.1.0"
 
-
-
 [tool.poetry.group.docs.dependencies]
-mkdocs = "^1.4.2"
-mkdocs-material = "^9.0.9"
+mkdocs = { version = "^1.4.2", optional = true}
+mkdocs-material = { version = "^9.0.9", optional = true}
 
-
-[[tool.poetry.source]]
-name = "testpypi"
-url = "https://test.pypi.org"
-default = false
-secondary = false
+[tool.poetry.extras]
+docs = ["mkdocs", "mkdocs-material"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
