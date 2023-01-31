@@ -34,7 +34,7 @@ def main(
     commit_message: str = typer.Option(
         "Bumped version", help="Commit message for version bump"
     ),
-    git_tag_prefix: str = typer.Option("", help="Prefix for git tag")
+    git_tag_prefix: str = typer.Option("", help="Prefix for git tag"),
 ):
     project_dir = os.getcwd()
     console = ReciteConsole()
