@@ -44,7 +44,7 @@ Push the newly created tag to the remote.
 ### Build and publish
 
 Uses poetry's [publish](https://python-poetry.org/docs/cli/#publish) command to build your project and upload it to [PyPI](pypi.org).
-If you have `PYPI_TOKEN` as environment variable it will use token-based authentication. Else you will be prompted for the required values.
+If you have `PYPI_TOKEN` as environment variable it will use token-based authentication. Do NOT store this variable in any file that you version control (publicly). If this variable is not set you will be prompted for the required values.
 
 ### Remind you to create a github release
 
