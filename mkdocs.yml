@@ -1,0 +1,52 @@
+site_name: recite
+theme:
+  name: material
+  font:
+    text: Inconsolata
+  palette:
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+  logo: assets/logo.png
+  favicon: assets/logo.png
+  features:
+    - navigation.instant
+    - navigation.tracking
+
+repo_name: dobraczka/recite
+repo_url: https://github.com/dobraczka/recite
+
+plugins:
+  - search:
+      lang: en
+
+extra:
+  social:
+    - icon: fontawesome/brands/github-alt
+      link: https://github.com/dobraczka/recite
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/dobraczka
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/dobraczka
+
+markdown_extensions:
+  - pymdownx.superfences
+
+extra_css:
+  - css/extra.css
+  - css/termynal.css
+  - css/custom.css
+
+extra_javascript:
+  - js/termynal.js
+  - js/custom.js

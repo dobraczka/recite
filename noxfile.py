@@ -62,8 +62,6 @@ def type_checking(session: Session) -> None:
 @session()
 def build_docs(session: Session) -> None:
     session.install(".")
-    session.install("sphinx")
-    session.install("insegel")
-    session.cd("docs")
-    session.run("make", "clean", external=True)
-    session.run("make", "html", external=True)
+    session.install("mkdocs")
+    session.install("mkdocs-material")
+    session.run("mkdocs", "build", external=True)

@@ -1,0 +1,115 @@
+/**
+ * termynal.js
+ *
+ * @author Ines Montani <ines@ines.io>
+ * @version 0.0.1
+ * @license MIT
+ */
+
+:root {
+    --color-text-subtle: #a2a2a2;
+    --color-red: #ca9898;
+    --color-yellow: #ccb263;
+    --color-green: #61975c;
+}
+
+[data-termynal] {
+    width: 750px;
+    max-width: 100%;
+    background: var(--md-code-bg-color);
+    color: var(--md-code-fg-color);
+    /* font-size: 18px; */
+    font-size: 15px;
+    /* font-family: 'Fira Mono', Consolas, Menlo, Monaco, 'Courier New', Courier, monospace; */
+    font-family: 'Inconsolata', 'Roboto Mono', 'Fira Mono', Consolas, Menlo, Monaco, 'Courier New', Courier, monospace;
+    border-radius: 4px;
+    padding: 75px 45px 35px;
+    position: relative;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    line-height: 1.2;
+}
+
+[data-termynal]:before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    /* A little hack to display the window buttons in one pseudo element. */
+    background: var(--color-red);
+    -webkit-box-shadow: 25px 0 0 var(--color-yellow), 50px 0 0 var(--color-green);
+            box-shadow: 25px 0 0 var(--color-yellow), 50px 0 0 var(--color-green);
+}
+
+[data-termynal]:after {
+    content: 'bash';
+    position: absolute;
+    color: var(--color-text-subtle);
+    top: 5px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+
+a[data-terminal-control] {
+    text-align: right;
+    display: block;
+    color: #779e9b;
+}
+
+[data-ty] {
+    display: block;
+    line-height: 2;
+}
+
+[data-ty]:before {
+    /* Set up defaults and ensure empty lines are displayed. */
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+}
+
+[data-ty="input"]:before,
+[data-ty-prompt]:before {
+    margin-right: 0.75em;
+    color: var(--color-text-subtle);
+}
+
+[data-ty="input"]:before {
+    content: '$';
+}
+
+[data-ty][data-ty-prompt]:before {
+    content: attr(data-ty-prompt);
+}
+
+[data-ty-cursor]:after {
+    content: attr(data-ty-cursor);
+    font-family: monospace;
+    margin-left: 0.5em;
+    -webkit-animation: blink 1s infinite;
+            animation: blink 1s infinite;
+}
+
+.termynal-green-text{ color: var(--md-code-green)}
+.termynal-blue-text{ color: var(--md-code-hl-number-color)}
+.termynal-yellow-text{ color: var(--md-code-hl-number-color)}
+
+
+/* Cursor animation */
+
+@-webkit-keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
