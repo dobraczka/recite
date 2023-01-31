@@ -12,25 +12,38 @@
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </p>
 
-`recite` intends to make releasing [poetry](https://python-poetry.org/)-based libraries easier and avoid missing important steps (e.g. adapting the changelog).
+`recite` intends to make releasing [poetry](https://python-poetry.org/)-based libraries easier and avoid missing important steps (e.g. adapting the changelog (because [you should keep one](https://keepachangelog.com/))).
 
-It checks the following steps:
-    - Make sure you have a (non-empty) pyproject.toml
-    - Make sure you're on main/master branch
-    - Make sure git is clean
-    - Run test-suite
-    - Make sure changelog was updated (because [you should keep one](https://keepachangelog.com/))
+```console
+$ recite patch
 
-If this succeeds, it performs the following steps:
-    - Bump the version via poetry's [version](https://python-poetry.org/docs/cli/#version) command
-    - Add and commit the changed pyproject.toml
-    - Create a git tag with the new version
-    - Push the new tag
-    - Publish (and build) via poetry's [publish](https://python-poetry.org/docs/cli/#publish) command
-    - Reminds you to create a github relase with release information from your changelog
+recite > 👀 Checking everything to make sure you are ready to release 👀
+recite > 1: ✓ Make sure you have a (non-empty) pyproject.toml
+recite > 2: ✓ Make sure you're on main/master branch
+recite > 3: ✓ Make sure git is clean
+recite > 4: ✓ Run test-suite
+recite > 5: ✓ Make sure changelog was updated
+recite > 🤓 Everything looks perfect! 🤓
+recite > I will perform the following steps:
+recite >        * Would bump version from 0.1.0 to 0.1.1
+recite >        * Commit version bump
+recite >        * Create git tag 0.1.1
+recite >        * Push git tag 0.1.1
+recite >        * Remind you to upload build as github release
+Do you want to proceed? [y/N]: y
+recite > ✨ Performing release ✨
+recite > 1: ✓ Bump version
+recite >        * Bumped version from 0.1.0 to 0.1.1
+recite > 2: ✓ Commit version bump
+recite > 3: ✓ Create git tag 0.1.1
+recite > 4: ✓ Push git tag 0.1.1
+Please create a github release now! Did you do it? [y/N]: y
+recite > 5: ✓ Remind you to upload build as github release
+recite > 🚀 Congrats to your release! 🚀
+```
 
-Usage
-=====
+# Installation
 
-Installation
-============
+```console
+$ pip install recite
+```
