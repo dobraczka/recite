@@ -233,7 +233,7 @@ class PoetryPublishStep(Step):
         res = subprocess.run(command)
         if res.returncode != 0:
             return Result(success=False, messages=[res.stderr.decode().strip()])
-        return Result(success=True, messages="Build and published successfully!")
+        return Result(success=True, messages=["Build and published successfully!"])
 
 
 @dataclass(kw_only=True)

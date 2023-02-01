@@ -45,11 +45,18 @@ recite > 🚀 Congrats to your release! 🚀
 
 # Installation
 
+Since `recite` is a python application it is recommended to install it via [pipx](https://pypa.github.io/pipx/):
+```console
+$ pipx install recite
+```
+
+But you can also install it via pip:
+
 ```console
 $ pip install recite
 ```
 
 # Why?
 
-Previously I used a github action to automatically build and publish a new version of a library if a new tag was pushed. However, sometimes I forgot to something crucial (e.g. to adapt the changelog). In this case I had to rush to stop the github action before it would publish the release to pypi (where it would lie forever unable to be rectified).
-This ensures all the necessary checks are in place before any tags are created.
+Previously I used a github action to automatically build and publish a new version of a library if a new tag was pushed. However, sometimes I forgot something crucial (e.g. to adapt the changelog). In this case I had to rush to stop the github action before it would publish the release to pypi (where it would lie forever unable to be rectified).
+With `recite` it is ensured all the necessary checks are in place before any tags are created.
