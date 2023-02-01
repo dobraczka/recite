@@ -174,7 +174,7 @@ class CommitVersionBumpStep(GitStep):
     def run(self) -> Result:
         try:
             self.repo.git.add("pyproject.toml")
-            self.repo.git.commit(self.commit_message)
+            self.repo.git.commit("-m", self.commit_message)
         except GitCommandError as e:
             return Result(success=False, messages=[e.stderr.strip()])
         return Result(success=True)
