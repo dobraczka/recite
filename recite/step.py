@@ -40,6 +40,7 @@ class GitStep(Step):
 
 class DynamicVersionDescriptionGitStep(GitStep):
     _new_version: str
+    prefix: str
 
     @property
     def new_version(self) -> str:
@@ -47,7 +48,7 @@ class DynamicVersionDescriptionGitStep(GitStep):
 
     @new_version.setter
     def new_version(self, new_v: str):
-        self.description += f" [blue]{new_v}[/blue]"
+        self.description += f" [blue]{self.prefix}{new_v}[/blue]"
         self._new_version = new_v
 
 
@@ -183,7 +184,7 @@ class CommitVersionBumpStep(GitStep):
 class GitTagStep(DynamicVersionDescriptionGitStep):
     short_name: str = "gittag"
     description: str = "Create git tag"
-    prefix: str = ""
+    prefix: str = "v"
 
     def run(self) -> Result:
         if not hasattr(self, "_new_version"):
@@ -202,6 +203,7 @@ class PushTagStep(DynamicVersionDescriptionGitStep):
     short_name: str = "pushtag"
     description: str = "Push git tag"
     remote: str = "origin"
+    prefix: str = "v"
 
     def run(self) -> Result:
         if self.new_version is None:
@@ -209,7 +211,7 @@ class PushTagStep(DynamicVersionDescriptionGitStep):
                 success=False, messages=["Can't tag if no new version is provided"]
             )
         try:
-            self.repo.git.push(self.remote, self.new_version)
+            self.repo.git.push(self.remote, f"{self.prefix}{self.new_version}")
         except GitCommandError as e:
             return Result(success=False, messages=[e.stderr.strip()])
         return Result(success=True)

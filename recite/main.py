@@ -56,8 +56,8 @@ def main(
         is_initial = False
         if release_type == "initial":
             steps = [
-                GitTagStep(),
-                PushTagStep(remote=remote),
+                GitTagStep(prefix=git_tag_prefix),
+                PushTagStep(remote=remote, prefix=git_tag_prefix),
                 PoetryPublishStep(),
                 GithubReleaseReminderStep(),
             ]
@@ -66,8 +66,8 @@ def main(
             steps = [
                 BumpVersionStep(bump_rule=release_type),
                 CommitVersionBumpStep(commit_message=commit_message),
-                GitTagStep(),
-                PushTagStep(remote=remote),
+                GitTagStep(prefix=git_tag_prefix),
+                PushTagStep(remote=remote, prefix=git_tag_prefix),
                 PoetryPublishStep(),
                 GithubReleaseReminderStep(),
             ]
