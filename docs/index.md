@@ -1,5 +1,3 @@
-# recite
-
 <p align="center">
 <img src="https://github.com/dobraczka/recite/raw/main/docs/assets/logo.png" alt="recite logo", width=200/>
 </p>
