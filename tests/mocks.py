@@ -24,7 +24,7 @@ class MockGit:
     def add(self, file_name: str):
         self.added.append(file_name)
 
-    def commit(self, msg: str):
+    def commit(self, flag: str, msg: str):
         self.commit_messages.append(msg)
 
     def tag(self, tag: str):

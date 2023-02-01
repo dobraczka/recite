@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed wrong display of build and publish step
+- Fixed version bumping commit bug
 
 ## [0.1.0] - 2023-01-31
 
