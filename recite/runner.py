@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Iterable, Optional
 
 import typer
 
@@ -12,6 +12,27 @@ class StepRunner:
     beginning_message: str
     console: ReciteConsole
     steps: Iterable[Step]
+    skip_steps: Optional[str] = None
+
+    def _validate_skipped(self):
+        if self.skip_steps is None:
+            return True
+        skip_list = self.skip_steps.split(",")
+        for step in self.steps:
+            if step.short_name in skip_list:
+                step.skip = True
+                skip_list.remove(step.short_name)
+        if len(skip_list) > 0:
+            self.console.print_multiple_messages(
+                messages=[
+                    f"Unknown step(s) to skip: {skip_list}",
+                    "You can get the list of available checks via [italic]`recite list-checks`[/italic]",
+                ],
+                indent_count=1,
+                color="red",
+            )
+            return False
+        return True
 
     def pre_run(self):
         pass  # pragma: no cover
@@ -20,9 +41,20 @@ class StepRunner:
         pass  # pragma: no cover
 
     def run_steps(self) -> bool:
+        if not self._validate_skipped():
+            return False
         self.pre_run()
         self.console.print_message(message=self.beginning_message)
         for number, step in enumerate(self.steps, start=1):
+            if step.skip:
+                self.console.print_message(
+                    message=f"Skipping {step.short_name} ~",
+                    color="italic",
+                    indent_count=1,
+                    indent_whitespace=" ",
+                    indent_char="~",
+                )
+                continue
             result = step.run()
             if result.success:
                 self.console.print_success(message=step.description, number=number)

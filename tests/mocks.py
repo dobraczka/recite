@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import List, Optional
 
+from recite.step import Result
+
 
 @dataclass
 class MockGit:
@@ -48,6 +50,18 @@ class MockRepo:
 
     def is_dirty(self, untracked_files: bool) -> bool:
         return self.dirty
+
+
+@dataclass
+class MockStep:
+    short_name: str
+    description: str
+    skip: bool = False
+    was_run: bool = False
+
+    def run(self):
+        self.was_run = True
+        return Result(success=True)
 
 
 def mock_post_init(self):

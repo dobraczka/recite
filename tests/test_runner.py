@@ -17,12 +17,12 @@ from recite.step import (
     VersionBump,
 )
 
-from .mocks import mock_post_init_with_git
+from .mocks import MockStep, mock_post_init_with_git
 from .utils import create_versioned_pyproject_toml
 
 
 @dataclass(kw_only=True)
-class MockStep(BumpVersionStep):
+class MockBumpVersionStep(BumpVersionStep):
     short_name: str = "mockstep"
     description: str = "Mock a step"
     bump_rule: str = "patch"
@@ -44,7 +44,7 @@ class MockStep(BumpVersionStep):
 @pytest.mark.parametrize("successes", [([True, True]), ([False])])
 @pytest.mark.parametrize("runner_cls", [CheckStepRunner, PerformReleaseRunner])
 def test_runner(mocked, successes, runner_cls):
-    steps = [MockStep(success=s) for s in successes]
+    steps = [MockBumpVersionStep(success=s) for s in successes]
     runner = runner_cls(steps=steps, console=ReciteConsole())
     assert all(successes) == runner.run_steps()
 
@@ -52,7 +52,7 @@ def test_runner(mocked, successes, runner_cls):
 @mock.patch("typer.confirm", return_value=False)
 def test_release_runner_no_confirm(mocked):
     runner = PerformReleaseRunner(
-        steps=[MockStep(success=True)], console=ReciteConsole()
+        steps=[MockBumpVersionStep(success=True)], console=ReciteConsole()
     )
     with pytest.raises(click.exceptions.Abort):
         runner.run_steps()
@@ -74,3 +74,37 @@ def test_full_release_runner(mocked, bump_rule, current_version, tmp_path):
     ]
     runner = PerformReleaseRunner(steps=steps, console=ReciteConsole())
     runner.run_steps()
+
+
+@pytest.fixture
+def mock_step_list():
+    return [
+        MockStep(short_name="first", description="A desc"),
+        MockStep(short_name="second", description="Another desc"),
+        MockStep(short_name="third", description="Yet another desc"),
+    ]
+
+
+@pytest.mark.parametrize(
+    "skip, expected",
+    [
+        (None, ["first", "second", "third"]),
+        ("second", ["first", "third"]),
+        ("wrong", None),
+        ("first,second", ["third"]),
+        ("first,second,wrong", None),
+        ("first,second,third", []),
+    ],
+)
+def test_skipped_checks(skip, expected, mock_step_list):
+    runner = CheckStepRunner(
+        beginning_message="",
+        console=ReciteConsole(),
+        steps=mock_step_list,
+        skip_steps=skip,
+    )
+    res = runner.run_steps()
+    if expected is None:
+        assert not res
+    else:
+        assert expected == [step.short_name for step in runner.steps if step.was_run]
