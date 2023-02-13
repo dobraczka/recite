@@ -30,7 +30,7 @@ class MockGit:
     def tag(self, tag: str):
         self.tags.append(tag)
 
-    def push(self, remote: str, tag: str):
+    def push(self, remote: str, tag: Optional[str] = None):
         self.pushes.append((remote, tag))
 
 
