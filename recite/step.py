@@ -106,6 +106,7 @@ class RunTestsStep(Step):
 class CheckChangelogStep(GitStep):
     short_name: str = "check_changelog"
     description: str = "Make sure changelog was updated"
+    prefix: str = "v"
 
     def run(self) -> Result:
         paths = [
@@ -133,7 +134,7 @@ class CheckChangelogStep(GitStep):
                     success=False, messages=[f"Changelog file '{cl_path}' empty"]
                 )
         # check if there is a diff
-        res = self.repo.git.diff(current_version, "--", cl_path)
+        res = self.repo.git.diff(f"{self.prefix}{current_version}", "--", cl_path)
         success = len(res) > 0
         return Result(success=success)
 
@@ -170,12 +171,14 @@ class BumpVersionStep(Step):
 class CommitVersionBumpStep(GitStep):
     short_name: str = "commitbump"
     description: str = "Commit version bump"
+    remote: str = "origin"
     commit_message: str = "Bumped version"
 
     def run(self) -> Result:
         try:
             self.repo.git.add("pyproject.toml")
             self.repo.git.commit("-m", self.commit_message)
+            self.repo.git.push(self.remote)
         except GitCommandError as e:
             return Result(success=False, messages=[e.stderr.strip()])
         return Result(success=True)
