@@ -15,7 +15,7 @@
 `recite` intends to make releasing [poetry](https://python-poetry.org/)-based libraries easier and avoid missing important steps (e.g. adapting the changelog (because [you should keep one](https://keepachangelog.com/))).
 
 ```console
-$ recite patch
+$ recite release patch
 
 recite > 👀 Checking everything to make sure you are ready to release 👀
 recite > 1: ✓ Make sure you have a (non-empty) pyproject.toml
@@ -55,6 +55,24 @@ But you can also install it via pip:
 ```console
 $ pip install recite
 ```
+
+# Usage
+
+You can perform e.g a patch release with the command:
+
+```console
+$ recite release patch
+```
+
+The classifiers are the same as poetry's bump rules of the it's [version command](https://python-poetry.org/docs/cli/#version).
+
+To list the available checks use:
+
+```console
+$ recite list-checks
+```
+
+You can find more info in the [docs](https://recite.readthedocs.io)
 
 # Why?
 

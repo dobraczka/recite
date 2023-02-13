@@ -29,6 +29,7 @@ repo_url: https://github.com/dobraczka/recite
 
 nav:
   - recite: index.md
+  - usage: usage.md
   - steps: steps.md
   - recommendations: recommendations.md
 
