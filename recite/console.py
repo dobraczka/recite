@@ -24,6 +24,7 @@ class ReciteConsole:
         number_str: str = "",
         indent_count: int = 0,
         indent_char: str = "*",
+        indent_whitespace: str = "\t",
     ):
         if color.lower() == "bad":
             color = self.bad_color
@@ -31,7 +32,7 @@ class ReciteConsole:
             color = self.good_color
         indent_str = ""
         if indent_count > 0:
-            indent_str = "\t" * indent_count
+            indent_str = indent_whitespace * indent_count
             indent_str += indent_char + " "
         rprint(
             f"{self.prefix} {number_str}[{color}]{indent_str}{glyph}{message}[/{color}]"

@@ -1,4 +1,5 @@
 import os
+from typing import List, Optional
 
 import typer
 
@@ -22,7 +23,7 @@ console = ReciteConsole()
 app = typer.Typer()
 
 
-def _setup(allow_untracked_files: bool = False):
+def _setup(allow_untracked_files: bool = False, skip_checks: Optional[str] = None):
     project_dir = os.getcwd()
     console = ReciteConsole()
     checks = CheckStepRunner(
@@ -36,6 +37,7 @@ def _setup(allow_untracked_files: bool = False):
             CheckChangelogStep(project_dir=project_dir),
         ],
         console=console,
+        skip_steps=skip_checks,
     )
     return project_dir, console, checks
 
@@ -59,8 +61,14 @@ def release(
         "Bumped version", help="Commit message for version bump"
     ),
     git_tag_prefix: str = typer.Option("v", help="Prefix for git tag"),
+    skip_checks: str = typer.Option(
+        None,
+        help="Comma-seperated list of checks referenced by their shortnames. You can print a list of checks with 'recite list-checks'",
+    ),
 ):
-    project_dir, console, checks = _setup()
+    project_dir, console, checks = _setup(
+        allow_untracked_files=allow_untracked_files, skip_checks=skip_checks
+    )
     successful = checks.run_steps()
     if not successful:
         typer.Exit(code=1)

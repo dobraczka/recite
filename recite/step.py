@@ -24,6 +24,7 @@ class Result:
 class StepMixin:
     short_name: str
     description: str
+    skip: bool = False
     project_dir: Optional[str] = None
 
 
