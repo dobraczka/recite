@@ -15,7 +15,7 @@
 `recite` intends to make releasing [poetry](https://python-poetry.org/)-based libraries easier and avoid missing important steps (e.g. adapting the changelog (because [you should keep one](https://keepachangelog.com/))).
 
 ```console
-$ recite patch
+$ recite release patch
 
 recite > 👀 Checking everything to make sure you are ready to release 👀
 recite > 1: ✓ Make sure you have a (non-empty) pyproject.toml

@@ -16,7 +16,7 @@
 
 <div class="termy">
 ```console
-$ recite patch
+$ recite release patch
 
 recite > 👀 Checking everything to make sure you are ready to release 👀
 recite > <span class="termynal-blue-text">1</span>: <span class="termynal-green-text">✓ Make sure you have a (non-empty) pyproject.toml</span>
