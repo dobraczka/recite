@@ -56,6 +56,24 @@ But you can also install it via pip:
 $ pip install recite
 ```
 
+# Usage
+
+You can perform e.g a patch release with the command:
+
+```console
+$ recite release patch
+```
+
+The classifiers are the same as poetry's bump rules of the it's [version command](https://python-poetry.org/docs/cli/#version).
+
+To list the available checks use:
+
+```console
+$ recite list-checks
+```
+
+You can find more info in the [docs](https://recite.readthedocs.io)
+
 # Why?
 
 Previously I used a github action to automatically build and publish a new version of a library if a new tag was pushed. However, sometimes I forgot something crucial (e.g. to adapt the changelog). In this case I had to rush to stop the github action before it would publish the release to pypi (where it would lie forever unable to be rectified).
