@@ -1,7 +1,10 @@
 from dataclasses import dataclass
-from typing import Iterable, Optional
+from typing import Any, Iterable, Optional
 
 from rich import print as rprint
+from rich.table import Table
+
+from .step import Step
 
 
 @dataclass
@@ -77,3 +80,11 @@ class ReciteConsole:
         self.print_message(
             message=message, indent_count=indent_count, color=self.bad_color
         )
+
+    def print_checks_table(self, checks: Iterable[Step]):
+        table = Table(title="Available Checks")
+        table.add_column("Shortname", style="cyan", no_wrap=True)
+        table.add_column("Description", style="green", no_wrap=True)
+        for check in checks:
+            table.add_row(check.short_name, check.description)
+        rprint(table)

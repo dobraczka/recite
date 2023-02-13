@@ -22,8 +22,32 @@ console = ReciteConsole()
 app = typer.Typer()
 
 
+def _setup(allow_untracked_files: bool = False):
+    project_dir = os.getcwd()
+    console = ReciteConsole()
+    checks = CheckStepRunner(
+        steps=[
+            CheckPyProjectStep(),
+            CheckOnMainStep(project_dir=project_dir),
+            CheckCleanGitStep(
+                project_dir=project_dir, allow_untracked_files=allow_untracked_files
+            ),
+            RunTestsStep(),
+            CheckChangelogStep(project_dir=project_dir),
+        ],
+        console=console,
+    )
+    return project_dir, console, checks
+
+
 @app.command()
-def main(
+def list_checks():
+    project_dir, console, checks = _setup()
+    console.print_checks_table(checks.steps)
+
+
+@app.command()
+def release(
     release_type: str = typer.Argument(
         ..., help="What type of release is this? For initial release use 'initial'"
     ),
@@ -36,20 +60,8 @@ def main(
     ),
     git_tag_prefix: str = typer.Option("v", help="Prefix for git tag"),
 ):
-    project_dir = os.getcwd()
-    console = ReciteConsole()
-    successful = CheckStepRunner(
-        steps=[
-            CheckPyProjectStep(),
-            CheckOnMainStep(project_dir=project_dir),
-            CheckCleanGitStep(
-                project_dir=project_dir, allow_untracked_files=allow_untracked_files
-            ),
-            RunTestsStep(),
-            CheckChangelogStep(project_dir=project_dir),
-        ],
-        console=console,
-    ).run_steps()
+    project_dir, console, checks = _setup()
+    successful = checks.run_steps()
     if not successful:
         typer.Exit(code=1)
     else:
