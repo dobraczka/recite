@@ -169,12 +169,14 @@ class BumpVersionStep(Step):
 class CommitVersionBumpStep(GitStep):
     short_name: str = "commitbump"
     description: str = "Commit version bump"
+    remote: str = "origin"
     commit_message: str = "Bumped version"
 
     def run(self) -> Result:
         try:
             self.repo.git.add("pyproject.toml")
             self.repo.git.commit("-m", self.commit_message)
+            self.repo.git.push(self.remote)
         except GitCommandError as e:
             return Result(success=False, messages=[e.stderr.strip()])
         return Result(success=True)
