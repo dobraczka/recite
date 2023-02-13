@@ -46,7 +46,7 @@ def main(
                 project_dir=project_dir, allow_untracked_files=allow_untracked_files
             ),
             RunTestsStep(),
-            CheckChangelogStep(project_dir=project_dir),
+            CheckChangelogStep(project_dir=project_dir, prefix=git_tag_prefix),
         ],
         console=console,
     ).run_steps()

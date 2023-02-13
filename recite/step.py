@@ -105,6 +105,7 @@ class RunTestsStep(Step):
 class CheckChangelogStep(GitStep):
     short_name: str = "check_changelog"
     description: str = "Make sure changelog was updated"
+    prefix: str = "v"
 
     def run(self) -> Result:
         paths = [
@@ -132,7 +133,7 @@ class CheckChangelogStep(GitStep):
                     success=False, messages=[f"Changelog file '{cl_path}' empty"]
                 )
         # check if there is a diff
-        res = self.repo.git.diff(current_version, "--", cl_path)
+        res = self.repo.git.diff(f"{self.prefix}{current_version}", "--", cl_path)
         success = len(res) > 0
         return Result(success=success)
 
