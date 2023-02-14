@@ -11,7 +11,7 @@ def tests(session: Session) -> None:
     session.run("pytest", *args)
 
 
-locations = ["recite", "tests", "noxfile.py"]
+locations = ["src", "tests", "noxfile.py"]
 
 
 @session()
@@ -42,7 +42,8 @@ def style_checking(session: Session) -> None:
 
 @session()
 def pyroma(session: Session) -> None:
-    session.install("poetry", "pyroma")
+    session.install("poetry-core>=1.0.0")
+    session.install("pyroma")
     session.run("pyroma", "--min", "10", ".")
 
 
