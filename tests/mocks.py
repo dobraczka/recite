@@ -86,9 +86,11 @@ def mock_run(self, repo: MockRepo = None, git: MockGit = None):
             self.repo.git = git
     return self._run()
 
+
 def mock_subprocess_run(command):
     class Object(object):
         pass
+
     res = Object()
     res.returncode = 0
     return res

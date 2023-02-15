@@ -14,8 +14,8 @@ from recite.step import (
     CheckPyProjectStep,
     CommitVersionBumpStep,
     GithubReleaseReminderStep,
-    PoetryPublishStep,
     GitTagStep,
+    PoetryPublishStep,
     Result,
     RunTestsStep,
     VersionBump,
@@ -155,7 +155,8 @@ def test_failed_version_bump(tmp_path):
     Repo.init(tmp_path)
     assert not CommitVersionBumpStep(project_dir=tmp_path).run().success
 
-@pytest.mark.parametrize("create_token", [True,False])
+
+@pytest.mark.parametrize("create_token", [True, False])
 def test_publish_poetry_step(create_token, tmp_path, monkeypatch, mocker):
     os.chdir(tmp_path)
     mocker.patch("subprocess.run", mock_subprocess_run)
