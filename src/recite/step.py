@@ -35,8 +35,13 @@ class Step(ABC, StepMixin):
 
 
 class GitStep(Step):
-    def __post_init__(self):
+    @abstractmethod
+    def _run(self) -> Result:
+        raise NotImplementedError  # pragma: no cover
+
+    def run(self):
         self.repo = Repo(self.project_dir)  # pragma: no cover
+        return self._run()
 
 
 class DynamicVersionDescriptionGitStep(GitStep):
@@ -70,7 +75,7 @@ class CheckOnMainStep(GitStep):
     short_name: str = "check_on_main"
     description: str = "Make sure you're on main/master branch"
 
-    def run(self) -> Result:
+    def _run(self) -> Result:
         current_branch = self.repo.active_branch.name
         success = current_branch == "main" or current_branch == "master"
         return Result(success=success)
@@ -82,7 +87,7 @@ class CheckCleanGitStep(GitStep):
     description: str = "Make sure git is clean"
     allow_untracked_files: bool = False
 
-    def run(self) -> Result:
+    def _run(self) -> Result:
         if self.repo.is_dirty(untracked_files=self.allow_untracked_files):
             return Result(success=False, messages=["You have an unclean working tree!"])
         res = self.repo.git.status("--branch", "--porcelain")
@@ -108,7 +113,7 @@ class CheckChangelogStep(GitStep):
     description: str = "Make sure changelog was updated"
     prefix: str = "v"
 
-    def run(self) -> Result:
+    def _run(self) -> Result:
         paths = [
             "CHANGELOG",
             "CHANGELOG.md",
@@ -174,7 +179,7 @@ class CommitVersionBumpStep(GitStep):
     remote: str = "origin"
     commit_message: str = "Bumped version"
 
-    def run(self) -> Result:
+    def _run(self) -> Result:
         try:
             self.repo.git.add("pyproject.toml")
             self.repo.git.commit("-m", self.commit_message)
@@ -190,7 +195,7 @@ class GitTagStep(DynamicVersionDescriptionGitStep):
     description: str = "Create git tag"
     prefix: str = "v"
 
-    def run(self) -> Result:
+    def _run(self) -> Result:
         if not hasattr(self, "_new_version"):
             return Result(
                 success=False, messages=["Can't tag if no new version is provided"]
@@ -209,7 +214,7 @@ class PushTagStep(DynamicVersionDescriptionGitStep):
     remote: str = "origin"
     prefix: str = "v"
 
-    def run(self) -> Result:
+    def _run(self) -> Result:
         if self.new_version is None:
             return Result(
                 success=False, messages=["Can't tag if no new version is provided"]
@@ -225,11 +230,12 @@ class PushTagStep(DynamicVersionDescriptionGitStep):
 class PoetryPublishStep(Step):
     short_name: str = "publish"
     description: str = "Build and publish with poetry"
+    pypy_token_name: str = "PYPI_TOKEN"
 
     def run(self) -> Result:
         command = ["poetry", "publish", "--build"]
-        if os.getenv("PYPI_TOKEN"):
-            token = os.getenv("PYPI_TOKEN")
+        if os.getenv(self.pypy_token_name):
+            token = os.getenv(self.pypy_token_name)
             assert token  # for mypy
             command.extend(["--username", "__token__", "--password", token])
         else:
