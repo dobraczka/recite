@@ -230,11 +230,12 @@ class PushTagStep(DynamicVersionDescriptionGitStep):
 class PoetryPublishStep(Step):
     short_name: str = "publish"
     description: str = "Build and publish with poetry"
+    pypy_token_name: str = "PYPI_TOKEN"
 
     def run(self) -> Result:
         command = ["poetry", "publish", "--build"]
-        if os.getenv("PYPI_TOKEN"):
-            token = os.getenv("PYPI_TOKEN")
+        if os.getenv(self.pypy_token_name):
+            token = os.getenv(self.pypy_token_name)
             assert token  # for mypy
             command.extend(["--username", "__token__", "--password", token])
         else:
@@ -242,7 +243,6 @@ class PoetryPublishStep(Step):
             password = typer.prompt("Please enter your PyPI password", hide_input=True)
             command.extend(["--username", user_name, "--password", password])
         res = subprocess.run(command)
-        print(res)
         if res.returncode != 0:
             return Result(success=False, messages=[res.stderr.decode().strip()])
         return Result(success=True, messages=["Build and published successfully!"])

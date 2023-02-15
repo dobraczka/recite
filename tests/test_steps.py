@@ -155,10 +155,15 @@ def test_failed_version_bump(tmp_path):
     Repo.init(tmp_path)
     assert not CommitVersionBumpStep(project_dir=tmp_path).run().success
 
-@mock.patch("subprocess.run", mock_subprocess_run)
-def test_publish_poetry_step(tmp_path):
+@pytest.mark.parametrize("create_token", [True,False])
+def test_publish_poetry_step(create_token, tmp_path, monkeypatch, mocker):
     os.chdir(tmp_path)
-    assert PoetryPublishStep().run().success
+    mocker.patch("subprocess.run", mock_subprocess_run)
+    mocker.patch("typer.prompt", return_value="blabla")
+    token_name = "MYTOKENNAME"
+    if create_token:
+        monkeypatch.setenv(token_name, "somevalue")
+    assert PoetryPublishStep(pypy_token_name=token_name).run().success
 
 
 @mock.patch("typer.confirm", return_value=False)

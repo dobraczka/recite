@@ -92,4 +92,3 @@ def mock_subprocess_run(command):
     res = Object()
     res.returncode = 0
     return res
-
