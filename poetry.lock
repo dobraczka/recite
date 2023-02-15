@@ -1114,21 +1114,6 @@ files = [
 ]
 
 [[package]]
-name = "pep517"
-version = "0.13.0"
-description = "Wrappers to build Python packages using PEP 517 hooks"
-category = "dev"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "pep517-0.13.0-py3-none-any.whl", hash = "sha256:4ba4446d80aed5b5eac6509ade100bff3e7943a8489de249654a5ae9b33ee35b"},
-    {file = "pep517-0.13.0.tar.gz", hash = "sha256:ae69927c5c172be1add9203726d4b84cf3ebad1edcd5f71fcdc746e66e829f59"},
-]
-
-[package.dependencies]
-tomli = {version = ">=1.1.0", markers = "python_version < \"3.11\""}
-
-[[package]]
 name = "pexpect"
 version = "4.8.0"
 description = "Pexpect allows easy control of interactive console applications."
@@ -1334,28 +1319,31 @@ tomli = {version = ">=1.1.0", markers = "python_version < \"3.11\""}
 
 [[package]]
 name = "pyroma"
-version = "4.1"
-description = "Test your project's packaging friendliness"
+version = "4.2.dev0"
+description = ""
 category = "dev"
 optional = false
-python-versions = "*"
-files = [
-    {file = "pyroma-4.1-py3-none-any.whl", hash = "sha256:a7f87ee185c8cf262bd04ba4a28b2f1f503335a2698bbf9700a230e4fe339f9d"},
-    {file = "pyroma-4.1.tar.gz", hash = "sha256:ff87335abce04efef0749ee63f2a4dbb9a3fa5a1eee285beaaaed65059dca89a"},
-]
+python-versions = ">=3.7"
+files = []
+develop = false
 
 [package.dependencies]
-build = "*"
+build = ">=0.7.0"
 docutils = "*"
-pep517 = "*"
+packaging = "*"
 pygments = "*"
 requests = "*"
-setuptools = ">=61.0.0"
+setuptools = ">=42"
 trove-classifiers = ">=2022.6.26"
-wheel = "*"
 
 [package.extras]
-test = ["flit (>=3.4,<4)", "pytest", "pytest-cov", "setuptools (>=60)", "zest.releaser[recommended]"]
+test = ["setuptools (>=60)", "zest.releaser[recommended]"]
+
+[package.source]
+type = "git"
+url = "https://github.com/CAM-Gerlach/pyroma.git"
+reference = "improve-pep-517-approach"
+resolved_reference = "fe1233fdc4325591ad17f80893452c49015c3102"
 
 [[package]]
 name = "pytest"
@@ -1914,25 +1902,10 @@ files = [
     {file = "wcwidth-0.2.6.tar.gz", hash = "sha256:a5220780a404dbe3353789870978e472cfe477761f06ee55077256e509b156d0"},
 ]
 
-[[package]]
-name = "wheel"
-version = "0.38.4"
-description = "A built-package format for Python"
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "wheel-0.38.4-py3-none-any.whl", hash = "sha256:b60533f3f5d530e971d6737ca6d58681ee434818fab630c83a734bb10c083ce8"},
-    {file = "wheel-0.38.4.tar.gz", hash = "sha256:965f5259b566725405b05e7cf774052044b1ed30119b5d586b2703aafe8719ac"},
-]
-
-[package.extras]
-test = ["pytest (>=3.0.0)"]
-
 [extras]
 docs = ["mkdocs", "mkdocs-material"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<4.0"
-content-hash = "bfb102bd6efb53007aad4367578b62ff0233b3c4e8db8d437b0188e55253ce72"
+content-hash = "477cc2a8eede52101431a3e71e93e724f23bbebb6dbcdc9f95a5580da1dd86ff"

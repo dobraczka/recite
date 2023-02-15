@@ -9,8 +9,8 @@ keywords = ["releasing", "publishing", "packaging"]
 classifiers = ["Development Status :: 4 - Beta", "Programming Language :: Python", "Programming Language :: Python :: 3.8", "Programming Language :: Python :: 3.9", "Programming Language :: Python :: 3.10", "Programming Language :: Python :: 3 :: Only"]
 repository = "https://github.com/dobraczka/recite"
 packages = [
-  {include = "recite"},
-  {include = "recite/py.typed"},
+  {include = "recite", from = "src"},
+  {include = "recite/py.typed", from = "src"},
 ]
 
 [tool.poetry.urls]
@@ -45,7 +45,7 @@ flake8-print = "^5.0.0"
 nox-poetry = "^1.0.0"
 black = "^22.3.0"
 pytest-mock = "^3.7.0"
-pyroma = "^4.1"
+pyroma = {git = "https://github.com/CAM-Gerlach/pyroma.git", rev = "improve-pep-517-approach"}
 pydocstyle = "^6.1.1"
 flake8-bugbear = "^22.7.1"
 darglint = "^1.8.1"
@@ -95,4 +95,4 @@ include_trailing_comma = true
 reverse_relative = true
 
 [tool.cruft]
-skip = ["recite/__init__.py", "tests/", "README.md", "docs/"]
+skip = ["src/recite/__init__.py", "tests/", "README.md", "docs/"]
