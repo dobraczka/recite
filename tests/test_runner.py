@@ -17,7 +17,7 @@ from recite.step import (
     VersionBump,
 )
 
-from .mocks import MockStep, mock_post_init_with_git
+from .mocks import MockStep, mock_run
 from .utils import create_versioned_pyproject_toml
 
 
@@ -59,7 +59,7 @@ def test_release_runner_no_confirm(mocked):
 
 
 @mock.patch("typer.confirm", return_value=True)
-@mock.patch("recite.step.GitStep.__post_init__", mock_post_init_with_git)
+@mock.patch("recite.step.GitStep.run", mock_run)
 @pytest.mark.parametrize("bump_rule, current_version", [("patch", "0.1.0")])
 def test_full_release_runner(mocked, bump_rule, current_version, tmp_path):
     create_versioned_pyproject_toml(tmp_path, current_version)

@@ -44,7 +44,7 @@ def _setup(allow_untracked_files: bool = False, skip_checks: Optional[str] = Non
 
 @app.command()
 def list_checks():
-    project_dir, console, checks = _setup()
+    _, console, checks = _setup()
     console.print_checks_table(checks.steps)
 
 
@@ -71,7 +71,7 @@ def release(
     )
     successful = checks.run_steps()
     if not successful:
-        typer.Exit(code=1)
+        raise typer.Exit(code=1)
     else:
         is_initial = False
         if release_type == "initial":
@@ -99,4 +99,4 @@ def release(
 
 
 if __name__ == "__main__":
-    app()
+    app()  # pragma: no cover

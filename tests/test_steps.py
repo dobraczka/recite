@@ -20,7 +20,7 @@ from recite.step import (
     VersionBump,
 )
 
-from .mocks import MockBranch, MockGit, mock_post_init, mock_post_init_with_git
+from .mocks import MockBranch, MockGit, MockRepo, mock_run
 from .utils import create_file, create_versioned_pyproject_toml
 
 
@@ -32,7 +32,7 @@ def test_check_pyproject_step(create, e_success, tmp_path):
     assert CheckPyProjectStep().run().success == e_success
 
 
-@mock.patch("recite.step.CheckOnMainStep.__post_init__", mock_post_init)
+@mock.patch("recite.step.GitStep.run", mock_run)
 @pytest.mark.parametrize(
     "branch_name, e_success",
     [
@@ -43,11 +43,12 @@ def test_check_pyproject_step(create, e_success, tmp_path):
 )
 def test_check_on_main(branch_name, e_success, tmp_path):
     step = CheckOnMainStep(project_dir=tmp_path)
-    step.repo.active_branch = MockBranch(name=branch_name)
-    assert step.run().success == e_success
+    repo = MockRepo()
+    repo.active_branch = MockBranch(name=branch_name)
+    assert step.run(repo=repo).success == e_success
 
 
-@mock.patch("recite.step.CheckCleanGitStep.__post_init__", mock_post_init)
+@mock.patch("recite.step.GitStep.run", mock_run)
 @pytest.mark.parametrize(
     "is_dirty, unsynced, e_success",
     [
@@ -58,9 +59,9 @@ def test_check_on_main(branch_name, e_success, tmp_path):
 )
 def test_check_git_dirty(is_dirty, unsynced, e_success, tmp_path):
     step = CheckCleanGitStep(project_dir=tmp_path)
-    step.repo.dirty = is_dirty
-    step.repo.git = MockGit(unsynced=unsynced)
-    assert step.run().success == e_success
+    repo = MockRepo(dirty=is_dirty)
+    git = MockGit(unsynced=unsynced)
+    assert step.run(repo=repo, git=git).success == e_success
 
 
 @mock.patch("recite.step.subprocess")
@@ -76,7 +77,7 @@ def test_run_test_suite(mock_subproc, ret_code, e_success):
     assert step.run().success == e_success
 
 
-@mock.patch("recite.step.CheckChangelogStep.__post_init__", mock_post_init)
+@mock.patch("recite.step.GitStep.run", mock_run)
 @pytest.mark.parametrize(
     "file_name, content, current_version, has_diff, e_success",
     [
@@ -97,8 +98,8 @@ def test_check_changelog(
         create_file(tmp_path, file_name, content)
     os.chdir(tmp_path)
     step = CheckChangelogStep(project_dir=tmp_path)
-    step.repo.git = MockGit(has_diff=has_diff)
-    assert step.run().success == e_success
+    git = MockGit(has_diff=has_diff)
+    assert step.run(git=git).success == e_success
 
 
 @pytest.mark.parametrize(
@@ -143,7 +144,7 @@ def test_bump_version(
     )
 
 
-@mock.patch("recite.step.GitTagStep.__post_init__", mock_post_init)
+@mock.patch("recite.step.GitStep.run", mock_run)
 def test_git_tag_step_fails():
     assert not GitTagStep().run().success
 

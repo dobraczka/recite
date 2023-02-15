@@ -52,22 +52,36 @@ class MockRepo:
         return self.dirty
 
 
-@dataclass
 class MockStep:
-    short_name: str
-    description: str
-    skip: bool = False
-    was_run: bool = False
+    def __init__(
+        self,
+        short_name: str = "mockstep",
+        description: str = "mocks a step",
+        skip: bool = False,
+        was_run: bool = False,
+        *args,
+        **kwargs
+    ):
+        self.short_name = short_name
+        self.description = description
+        self.skip = skip
+        self.was_run = was_run
+        self.args = args
+        self.kwargs = kwargs
 
     def run(self):
         self.was_run = True
         return Result(success=True)
 
 
-def mock_post_init(self):
-    self.repo = MockRepo()
-
-
-def mock_post_init_with_git(self):
-    self.repo = MockRepo()
-    self.repo.git = MockGit()
+def mock_run(self, repo: MockRepo = None, git: MockGit = None):
+    if repo is None:
+        self.repo = MockRepo()
+    else:
+        self.repo = repo
+    if self.repo is not None:
+        if git is None:
+            self.repo.git = MockGit()
+        else:
+            self.repo.git = git
+    return self._run()
