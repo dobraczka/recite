@@ -14,13 +14,14 @@ from recite.step import (
     CheckPyProjectStep,
     CommitVersionBumpStep,
     GithubReleaseReminderStep,
+    PoetryPublishStep,
     GitTagStep,
     Result,
     RunTestsStep,
     VersionBump,
 )
 
-from .mocks import MockBranch, MockGit, MockRepo, mock_run
+from .mocks import MockBranch, MockGit, MockRepo, mock_run, mock_subprocess_run
 from .utils import create_file, create_versioned_pyproject_toml
 
 
@@ -153,6 +154,11 @@ def test_failed_version_bump(tmp_path):
     os.chdir(tmp_path)
     Repo.init(tmp_path)
     assert not CommitVersionBumpStep(project_dir=tmp_path).run().success
+
+@mock.patch("subprocess.run", mock_subprocess_run)
+def test_publish_poetry_step(tmp_path):
+    os.chdir(tmp_path)
+    assert PoetryPublishStep().run().success
 
 
 @mock.patch("typer.confirm", return_value=False)

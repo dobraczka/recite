@@ -242,6 +242,7 @@ class PoetryPublishStep(Step):
             password = typer.prompt("Please enter your PyPI password", hide_input=True)
             command.extend(["--username", user_name, "--password", password])
         res = subprocess.run(command)
+        print(res)
         if res.returncode != 0:
             return Result(success=False, messages=[res.stderr.decode().strip()])
         return Result(success=True, messages=["Build and published successfully!"])
