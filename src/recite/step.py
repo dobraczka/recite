@@ -92,8 +92,9 @@ class CheckCleanGitStep(GitStep):
             return Result(success=False, messages=["You have an unclean working tree!"])
         res = self.repo.git.status("--branch", "--porcelain")
         lines = str.splitlines(res)
-        if len(lines) > 0 and "[ahead " in lines[0]:
-            return Result(success=False, messages=["Local and remote not synced!"])
+        if len(lines) > 0:
+            if "[ahead " in lines[0] or "[behind " in lines[0]:
+                return Result(success=False, messages=["Local and remote not synced!"])
         return Result(success=True)
 
 
