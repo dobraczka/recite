@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "recite"
-version = "0.2.0"
+version = "0.2.1"
 description = "Publish your poetry-based projects, without missing important steps"
 authors = ["Daniel Obraczka <obraczka@informatik.uni-leipzig.de>"]
 license = "MIT"
