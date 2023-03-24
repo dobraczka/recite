@@ -23,6 +23,9 @@ class MockGit:
             return "diff --git just a test"
         return ""
 
+    def fetch(self):
+        pass
+
     def add(self, file_name: str):
         self.added.append(file_name)
 
